@@ -4,15 +4,34 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "gh-pages": "^1.1.0",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "watch-server": "cross-env NODE_ENV=development nodemon app.js --exec babel-node",
+    "watch-client": "node scripts/start.js",
+    "watch": "concurrently \"yarn watch-client\" \"yarn watch-server\"",
+    "build-client": "node scripts/build.js",
+    "build-server": "babel -d ./build/config ./config && babel -d ./build/server ./server && babel -d ./build ./app.js",
+    "build": "yarn build-client && yarn build-server",
+    "dev-build": "cross-env NODE_ENV=development yarn build",
+    "prod-build": "cross-env NODE_ENV=production yarn build",
+    "build-reset": "rm -rf build",
+    "rebuild": "yarn build-reset && yarn build",
+    "dev-rebuild": "cross-env NODE_ENV=development yarn rebuild",
+    "prod-rebuild": "cross-env NODE_ENV=production yarn rebuild",
+    "test": "node scripts/test.js --env=jsdom",
+    "start": "node build/app.js",
+    "dev-start": "cross-env NODE_ENV=development yarn start",
+    "prod-start": "cross-env NODE_ENV=production yarn start",
+    "dev": "yarn dev-build && yarn dev-start",
+    "prod": "yarn prod-build && yarn prod-start",
+    "heroku-postbuild": "yarn prod-build"
+  },
+  "homepage": "https://link357.github.io/clicky-game"
 }
